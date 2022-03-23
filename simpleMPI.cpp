@@ -34,11 +34,6 @@ using std::endl;
 // User include
 #include "simpleMPI.h"
 
-// Error handling macros
-#define MPI_CHECK(call) \
-    if((call) != MPI_SUCCESS) { \
-        cerr << "MPI error calling \""#call"\"\n"; \
-        my_abort(-1); }
 
 
 // Host code
@@ -51,12 +46,12 @@ int main(int argc, char *argv[])
     int dataSizePerNode = gridSize * blockSize;
 
     // Initialize MPI state
-    MPI_CHECK(MPI_Init(&argc, &argv));
+    MPI_Init(&argc, &argv);
 
     // Get our MPI node number and node count
     int commSize, commRank;
-    MPI_CHECK(MPI_Comm_size(MPI_COMM_WORLD, &commSize));
-    MPI_CHECK(MPI_Comm_rank(MPI_COMM_WORLD, &commRank));
+    MPI_Comm_size(MPI_COMM_WORLD, &commSize);
+    MPI_Comm_rank(MPI_COMM_WORLD, &commRank);
 
     // Generate some random numbers on the root node (node 0)
     int dataSizeTotal = dataSizePerNode * commSize;
@@ -73,14 +68,14 @@ int main(int argc, char *argv[])
     float *dataNode = new float[dataSizePerNode];
 
     // Dispatch a portion of the input data to each node
-    MPI_CHECK(MPI_Scatter(dataRoot,
-                          dataSizePerNode,
-                          MPI_FLOAT,
-                          dataNode,
-                          dataSizePerNode,
-                          MPI_FLOAT,
-                          0,
-                          MPI_COMM_WORLD));
+    MPI_Scatter(dataRoot,
+                dataSizePerNode,
+                MPI_FLOAT,
+                dataNode,
+                dataSizePerNode,
+                MPI_FLOAT,
+                0,
+                MPI_COMM_WORLD);
 
     if (commRank == 0)
     {
@@ -95,7 +90,7 @@ int main(int argc, char *argv[])
     float sumNode = sum(dataNode, dataSizePerNode);
     float sumRoot;
 
-    MPI_CHECK(MPI_Reduce(&sumNode, &sumRoot, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD));
+    MPI_Reduce(&sumNode, &sumRoot, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if (commRank == 0)
     {
@@ -105,7 +100,7 @@ int main(int argc, char *argv[])
 
     // Cleanup
     delete [] dataNode;
-    MPI_CHECK(MPI_Finalize());
+    MPI_Finalize();
 
     if (commRank == 0)
     {
