@@ -374,7 +374,7 @@ simpleMPI.o: simpleMPI.cu
 	/usr/local/cuda-10.2/bin/nvcc -ccbin g++ -I../../common/inc -o $@ -c $<
 
 simpleMPI: simpleMPI_mpi.o simpleMPI.o
-	mpicxx $(MPI_LDFLAGS) -o $@ $+ -L/usr/local/cuda-10.2/lib64 -lcudart
+	mpicxx -o $@ $+ -L/usr/local/cuda-10.2/lib64 -lcudart
 	mkdir -p bin
 	cp $@ bin
 
