@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     float *dataNode = new float[dataSizePerNode];
 
     // Dispatch a portion of the input data to each node
-    MPI_Bcast(dataRoot,
+    MPI_Scatter(dataRoot,
                 dataSizePerNode,
                 MPI_FLOAT,
                 dataNode,
