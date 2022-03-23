@@ -11,10 +11,10 @@ simpleMPI.o: simpleMPI.cu
 simpleMPI: simpleMPI_mpi.o simpleMPI.o
 	mpicxx -o $@ $+ -L/usr/local/cuda-10.2/lib64 -lcudart
 	mkdir -p bin
-	cp $@ bin
+	mv $@ bin
 
-run: build
-	./simpleMPI
+run:
+	mpiexec --hostfile clusterfile -np 2 ./bin/simpleMPI
 
 clean:
 	rm -f simpleMPI simpleMPI_mpi.o simpleMPI.o
