@@ -14,7 +14,7 @@ simpleMPI: simpleMPI_mpi.o simpleMPI.o
 	mv $@ bin
 
 run:
-	mpiexec --hostfile clusterfile -np 2 ./bin/simpleMPI
+	mpiexec --hostfile clusterfile -np 4 ./bin/simpleMPI
 
 clean:
 	rm -f simpleMPI simpleMPI_mpi.o simpleMPI.o
