@@ -367,22 +367,22 @@ else
 	@echo "Sample is ready - all dependencies have been met"
 endif
 
-simpleMPI_mpi.o:simpleMPI.cpp
+simpleMPI_mpi.o: simpleMPI.cpp
 	mpicxx -I../../common/inc -o $@ -c $<
 
-simpleMPI.o:simpleMPI.cu
+simpleMPI.o: simpleMPI.cu
 	/usr/local/cuda-10.2/bin/nvcc -ccbin g++ -I../../common/inc -o $@ -c $<
 
 simpleMPI: simpleMPI_mpi.o simpleMPI.o
-	mpicxx $(MPI_LDFLAGS) -o $@ $+ $(LIBRARIES)
-	mkdir -p ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
-	cp $@ ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
+	mpicxx $(MPI_LDFLAGS) -o $@ $+ -L/usr/local/cuda-10.2/lib64 -lcudart
+	mkdir -p bin
+	cp $@ bin
 
 run: build
 	./simpleMPI
 
 clean:
 	rm -f simpleMPI simpleMPI_mpi.o simpleMPI.o
-	rm -rf ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/simpleMPI
+	rm -rf bin
 
 clobber: clean
