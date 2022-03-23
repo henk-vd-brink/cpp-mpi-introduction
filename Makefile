@@ -368,18 +368,18 @@ else
 endif
 
 simpleMPI_mpi.o:simpleMPI.cpp
-	$(EXEC) $(MPICXX) $(INCLUDES) $(MPI_CCFLAGS) -o $@ -c $<
+	mpicxx -I../../common/inc -o $@ -c $<
 
 simpleMPI.o:simpleMPI.cu
-	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
+	/usr/local/cuda-10.2/bin/nvcc -ccbin g++ -I../../common/inc -o $@ -c $<
 
 simpleMPI: simpleMPI_mpi.o simpleMPI.o
-	$(EXEC) $(MPICXX) $(MPI_LDFLAGS) -o $@ $+ $(LIBRARIES)
-	$(EXEC) mkdir -p ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
-	$(EXEC) cp $@ ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
+	mpicxx $(MPI_LDFLAGS) -o $@ $+ $(LIBRARIES)
+	mkdir -p ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
+	cp $@ ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 
 run: build
-	$(EXEC) ./simpleMPI
+	./simpleMPI
 
 clean:
 	rm -f simpleMPI simpleMPI_mpi.o simpleMPI.o
